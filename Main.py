@@ -28,17 +28,15 @@ if request.ok:
    
     image_url = page_html.find('img')['src']
 
-    product_description = page_html.find('div', attrs={'id':'product_description', 'class':'sub-header'}).next_element
-    category = page_html.find('ul', attrs={'class':'breadcrumb'}).find_all('a')[-1]
-    print(category)
-    """
+    product_description = page_html.find('div', attrs={'id':'product_description', 'class':'sub-header'}).find_next('p').text
+    category = page_html.find('ul', attrs={'class':'breadcrumb'}).find_all('a')[2].contents[0]
+
     page_info = [product_page_url, universal_product_code, title.text, price_including_tax,
-                 price_excluding_tax, number_available, product_description.text, category,
+                 price_excluding_tax, number_available, product_description, category,
                  review_rating, image_url]
 
-    print(page_info)
+
     """
-    
    # Load
         # print(page_html.prettify())
     with open('P2_01_extract.csv', 'w', newline='') as csv_file:
@@ -48,3 +46,4 @@ if request.ok:
                              'review_rating', 'image_url')
         # fonction add info in new line
     # csv_file.close()
+    """
