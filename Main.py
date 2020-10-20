@@ -59,14 +59,14 @@ def listing_url(url_site, book_category):
                        .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
     if book_numbers >= 20:
         if book_numbers % 20 == 0:
-            for i in range[2,]:
+            for i in range(2, int(book_numbers//20)+1):
                 url_category = url_site + 'catalogue/category/books/' + book_category + 'page-' + str(i) + '.html'
                 url_list = url_list + [url_site + 'catalogue/' +
                                        '/'.join(u.a['href'].split('/')[3:-1])
                                        for u in BeautifulSoup(extract_url(url_category).text,
                                                               "html.parser").find_all('h3')]
         else:
-            for i in range[2,]:
+            for i in range(2, int((book_numbers//20)+1)+1):
                 url_category = url_site + 'catalogue/category/books/' + book_category + 'page-' + str(i) + '.html'
                 url_list = url_list + [url_site + 'catalogue/' +
                                        '/'.join(u.a['href'].split('/')[3:-1])
