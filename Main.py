@@ -25,7 +25,7 @@ def transform_info(url_chosen,url_request):
     number_available = tr_dic['Availability']
     review_rating = tr_dic['Number of reviews']
 
-    image_url = 'http://books.toscrape.com/' + '/'.join(page_html.find('img')['src'].split('/')[2:])
+    image_url = url_site + '/'.join(page_html.find('img')['src'].split('/')[2:])
     product_description = page_html.find('div', attrs={'id': 'product_description',
                                                        'class': 'sub-header'}).find_next('p').text
     category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
@@ -49,6 +49,24 @@ def create_csv(rows):
 
 
 #choix de la page
+url_site = 'http://books.toscrape.com/'
+book_category = 'sequential-art_5/'
+index = 'index'
+url_category = url_site + 'catalogue/category/books/' + book_category + index + '.html'
+
+book_numbers = int(BeautifulSoup(extract_url(url_category).text, "html.parser")
+                   .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
+
+if book_numbers >= 20:
+    if book_numbers % 20 == 0:
+        index_pagination = book_numbers // 20
+    else:
+        index_pagination = (book_numbers // 20) + 1
+else:
+    index_pagination = 1
+
+
+"""
 url = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
 
 #requete de la page
@@ -59,3 +77,5 @@ page_data = transform_info(url,request_test)
 
 #creation du fichier CSV
 create_csv(page_data)
+
+"""
