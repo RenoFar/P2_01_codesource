@@ -26,25 +26,25 @@ def transform_info(url_chosen,url_request):
     review_rating = tr_dic['Number of reviews']
 
     image_url = 'http://books.toscrape.com/' + '/'.join(page_html.find('img')['src'].split('/')[2:])
-
-    product_description = page_html.find('div', attrs={'id': 'product_description', 'class': 'sub-header'})\
-                            .find_next('p').text
+    product_description = page_html.find('div', attrs={'id': 'product_description',
+                                                       'class': 'sub-header'}).find_next('p').text
     category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
 
-    page_info = [url_chosen, universal_product_code, title, price_including_tax,
-                 price_excluding_tax, number_available, product_description, category,
-                 review_rating, image_url]
+    page_info = {'product_page_url': url_chosen, 'universal_ product_code (upc)': universal_product_code,
+                 'title': title, 'price_including_tax': price_including_tax,'price_excluding_tax': price_excluding_tax,
+                 'number_available': number_available, 'product_description': product_description, 'category':category,
+                 'review_rating': review_rating, 'image_url': image_url}
 
     return  page_info
 
 def create_csv(rows):
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
-                  'price_excluding_tax', 'number_available', 'product_description', 'category',
-                  'review_rating', 'image_url']
+              'price_excluding_tax', 'number_available', 'product_description', 'category',
+              'review_rating', 'image_url']
 
     with open('P2_01_extract.csv', 'w', newline='') as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow(header)
+        csv_writer = csv.DictWriter(csv_file, header)
+        csv_writer.writeheader()
         csv_writer.writerow(rows)
 
 
