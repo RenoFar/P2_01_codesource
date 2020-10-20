@@ -49,6 +49,7 @@ def create_csv(rows):
 
 
 #choix de la page
+url = []
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5/'
 index = 'index'
@@ -56,7 +57,6 @@ url_category = url_site + 'catalogue/category/books/' + book_category + index + 
 
 book_numbers = int(BeautifulSoup(extract_url(url_category).text, "html.parser")
                    .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
-
 if book_numbers >= 20:
     if book_numbers % 20 == 0:
         index_pagination = book_numbers // 20
@@ -65,7 +65,11 @@ if book_numbers >= 20:
 else:
     index_pagination = 1
 
+url = [url_site + 'catalogue/' +
+       '/'.join(u.a['href'].split('/')[3:-1])
+                for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
 
+print(url)
 """
 url = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
 
