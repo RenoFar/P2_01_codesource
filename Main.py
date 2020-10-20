@@ -26,7 +26,7 @@ if request.ok:
     number_available = tr_dic['Availability']
     review_rating = tr_dic['Number of reviews']
    
-    image_url = page_html.find('img')['src']
+    image_url = 'http://books.toscrape.com/' + '/'.join(page_html.find('img')['src'].split('/')[2:])
 
     product_description = page_html.find('div', attrs={'id':'product_description', 'class':'sub-header'}).find_next('p').text
     category = page_html.find('ul', attrs={'class':'breadcrumb'}).find_all('a')[2].contents[0]
@@ -36,6 +36,7 @@ if request.ok:
                  review_rating, image_url]
 
     print(page_info)
+
     """
    # Load
         # print(page_html.prettify())
