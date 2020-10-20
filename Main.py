@@ -75,24 +75,18 @@ def listing_url(url_site, book_category):
     return url_list
 
 
-#choix de la page
+#choix et requete de la page
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5/'
-
-url = listing_url(url_site, book_category)
-print(url)
-print(len(url))
-
-"""
-url = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
-
-#requete de la page
-request_test = extract_url(url)
+urls = listing_url(url_site, book_category)
+#print(urls)
+#print(len(urls))
 
 #mise en forme des données
-page_data = transform_info(url,request_test)
+pages_data = transform_info(urls,)
 
+"""
 #creation du fichier CSV
-create_csv(page_data)
+create_csv(pages_data)
 
 """
