@@ -35,16 +35,12 @@ if request.ok:
                  price_excluding_tax, number_available, product_description, category,
                  review_rating, image_url]
 
-    print(page_info)
-
-    """
-   # Load
-        # print(page_html.prettify())
+    # Load
     with open('P2_01_extract.csv', 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
-        csv_writer.writerow('product_page_url', 'universal_product_code', 'title', 'price_including_tax',
-                             'price_excluding_tax', 'number_available', 'product_description', 'category',
-                             'review_rating', 'image_url')
-        # fonction add info in new line
+        Header = ['product_page_url', 'universal_product_code', 'title', 'price_including_tax',
+                 'price_excluding_tax', 'number_available', 'product_description', 'category',
+                 'review_rating', 'image_url']
+        csv_writer.writerow(Header)
+        csv_writer.writerow(page_info)
     # csv_file.close()
-    """
