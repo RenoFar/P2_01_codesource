@@ -3,10 +3,12 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 
+
 def extract_url(page_url):
     request = requests.get(page_url)
     if request.ok:
         return request
+
 
 def transform_info(url_chosen,url_request):
     page_html = BeautifulSoup(url_request.text, "html.parser")
@@ -34,8 +36,8 @@ def transform_info(url_chosen,url_request):
                  'title': title, 'price_including_tax': price_including_tax,'price_excluding_tax': price_excluding_tax,
                  'number_available': number_available, 'product_description': product_description, 'category':category,
                  'review_rating': review_rating, 'image_url': image_url}
-
     return  page_info
+
 
 def create_csv(rows):
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
@@ -48,28 +50,39 @@ def create_csv(rows):
         csv_writer.writerow(rows)
 
 
-#choix de la page
-url = []
-url_site = 'http://books.toscrape.com/'
-book_category = 'sequential-art_5/'
-index = 'index'
-url_category = url_site + 'catalogue/category/books/' + book_category + index + '.html'
-
-book_numbers = int(BeautifulSoup(extract_url(url_category).text, "html.parser")
-                   .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
-if book_numbers >= 20:
-    if book_numbers % 20 == 0:
-        index_pagination = book_numbers // 20
-    else:
-        index_pagination = (book_numbers // 20) + 1
-else:
-    index_pagination = 1
-
-url = [url_site + 'catalogue/' +
-       '/'.join(u.a['href'].split('/')[3:-1])
+def listing_url(url_site, book_category):
+    url_category = url_site + 'catalogue/category/books/' + book_category + 'index.html'
+    url_list = [url_site + 'catalogue/' + '/'.join(u.a['href'].split('/')[3:-1])
                 for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
 
+    book_numbers = int(BeautifulSoup(extract_url(url_category).text, "html.parser")
+                       .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
+    if book_numbers >= 20:
+        if book_numbers % 20 == 0:
+            for i in range[2,]:
+                url_category = url_site + 'catalogue/category/books/' + book_category + 'page-' + str(i) + '.html'
+                url_list = url_list + [url_site + 'catalogue/' +
+                                       '/'.join(u.a['href'].split('/')[3:-1])
+                                       for u in BeautifulSoup(extract_url(url_category).text,
+                                                              "html.parser").find_all('h3')]
+        else:
+            for i in range[2,]:
+                url_category = url_site + 'catalogue/category/books/' + book_category + 'page-' + str(i) + '.html'
+                url_list = url_list + [url_site + 'catalogue/' +
+                                       '/'.join(u.a['href'].split('/')[3:-1])
+                                       for u in BeautifulSoup(extract_url(url_category).text,
+                                                              "html.parser").find_all('h3')]
+    return url_list
+
+
+#choix de la page
+url_site = 'http://books.toscrape.com/'
+book_category = 'sequential-art_5/'
+
+url = listing_url(url_site, book_category)
 print(url)
+print(len(url))
+
 """
 url = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
 
