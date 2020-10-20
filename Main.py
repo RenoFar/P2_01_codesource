@@ -10,8 +10,8 @@ def extract_url(page_url):
         return request
 
 
-def transform_info(url_chosen,url_request):
-    page_html = BeautifulSoup(url_request.text, "html.parser")
+def transform_info(url_chosen):
+    page_html = BeautifulSoup(extract_url(url_chosen).text, "html.parser")
 
     title = page_html.find('h1').text
 
@@ -79,11 +79,11 @@ def listing_url(url_site, book_category):
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5/'
 urls = listing_url(url_site, book_category)
-#print(urls)
-#print(len(urls))
 
 #mise en forme des données
-pages_data = transform_info(urls,)
+"""pages_data = transform_info(urls)"""
+# liste de dictionnaires ou dictionnaire de listes?
+# quid csv_writer?
 
 """
 #creation du fichier CSV
