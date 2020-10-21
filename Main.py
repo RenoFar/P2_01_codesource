@@ -87,7 +87,7 @@ url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5'
 
 """urls = listing_url(url_site, book_category)"""
-urls =({'product_page_url': '1', 'universal_ product_code (upc)': '2',
+urls_list =({'product_page_url': '1', 'universal_ product_code (upc)': '2',
         'title': '3', 'price_including_tax': '4','price_excluding_tax': '5',
         'number_available': '6', 'product_description': '7', 'category':'8',
         'review_rating': '9', 'image_url': '10'},
@@ -104,4 +104,4 @@ urls =({'product_page_url': '1', 'universal_ product_code (upc)': '2',
         'number_available': '36', 'product_description': '37', 'category': '38',
         'review_rating': '39', 'image_url': '40'})
 #mise en forme et écriture des données
-Writing_data(urls, book_category)
+Writing_data(urls_list, book_category)
