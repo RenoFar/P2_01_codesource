@@ -41,9 +41,9 @@ def transform_info(url_chosen):
 
 def create_csv(rows):
     header = list(rows.keys())
-    with open('P2_01_extract.csv', 'a',  encoding='utf-8', newline='') as csv_file:
+    with open('P2_01_extract.csv', 'a', encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, header)
-        if not csv.Sniffer().has_header(csv_file.read(sample_bytes)):
+        if os.stat('P2_01_extract.csv').st_size == 0:
             csv_writer.writeheader()
         csv_writer.writerow(rows)
 
@@ -72,19 +72,18 @@ def listing_url(url_site, book_category):
                                                               "html.parser").find_all('h3')]
     return url_list
 
+def listing_category():
+
+def Writing_data(url_lists):
+    for u in range(len(url_lists)):
+        pages_data = transform_info(url_lists[u])
+        create_csv(pages_data)
+
 
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5/'
-
 urls = listing_url(url_site, book_category)
 
 #mise en forme et écriture des données
-#i = 0
-for u in range(len(urls)):
-    pages_data = transform_info(urls[u])
-    #print(pages_data)
-    #i += 1
-    #print(str(i))
-    create_csv(pages_data)
-
+Writing_data(urls)
