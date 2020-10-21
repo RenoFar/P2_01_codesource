@@ -41,7 +41,6 @@ def transform_info(url_chosen):
 
 def create_csv(rows, name_cat):
     header = list(rows.keys())
-
     with open('P2_01_' + str(name_cat) + '.csv', 'a', encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, header)
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
@@ -73,35 +72,17 @@ def listing_url(url_site, book_cat):
                                                               "html.parser").find_all('h3')]
     return url_list
 
-#def listing_category():
 
 def Writing_data(url_lists, books_cat):
     for u in range(len(url_lists)):
-        pages_data = urls[u]
-        """pages_data = transform_info(url_lists[u])"""
+        pages_data = transform_info(url_lists[u])
         create_csv(pages_data, books_cat)
 
 
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5'
+urls_list = listing_url(url_site, book_category)
 
-"""urls = listing_url(url_site, book_category)"""
-urls_list =({'product_page_url': '1', 'universal_ product_code (upc)': '2',
-        'title': '3', 'price_including_tax': '4','price_excluding_tax': '5',
-        'number_available': '6', 'product_description': '7', 'category':'8',
-        'review_rating': '9', 'image_url': '10'},
-       {'product_page_url': '11', 'universal_ product_code (upc)': '12',
-        'title': '13', 'price_including_tax': '14', 'price_excluding_tax': '15',
-        'number_available': '16', 'product_description': '17', 'category': '18',
-        'review_rating': '19', 'image_url': '20'},
-       {'product_page_url': '21', 'universal_ product_code (upc)': '2',
-        'title': '23', 'price_including_tax': '24', 'price_excluding_tax': '25',
-        'number_available': '26', 'product_description': '27', 'category': '28',
-        'review_rating': '29', 'image_url': '30'},
-       {'product_page_url': '31', 'universal_ product_code (upc)': '32',
-        'title': '33', 'price_including_tax': '34', 'price_excluding_tax': '35',
-        'number_available': '36', 'product_description': '37', 'category': '38',
-        'review_rating': '39', 'image_url': '40'})
 #mise en forme et écriture des données
 Writing_data(urls_list, book_category)
