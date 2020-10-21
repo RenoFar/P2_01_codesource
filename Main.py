@@ -40,11 +40,12 @@ def transform_info(url_chosen):
 
 
 def create_csv(rows):
-    header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
+    header = list(rows.keys())
+    """header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
               'price_excluding_tax', 'number_available', 'product_description', 'category',
-              'review_rating', 'image_url']
+              'review_rating', 'image_url']"""
 
-    with open('P2_01_extract.csv', 'w', newline='') as csv_file:
+    with os.open('P2_01_extract.csv', 'a', newline='', encoding="utf-8") as csv_file:
         csv_writer = csv.DictWriter(csv_file, header)
         csv_writer.writeheader()
         csv_writer.writerow(rows)
@@ -75,18 +76,18 @@ def listing_url(url_site, book_category):
     return url_list
 
 
-#choix et requete de la page
+#choix et requete des pages
 url_site = 'http://books.toscrape.com/'
 book_category = 'sequential-art_5/'
+
 urls = listing_url(url_site, book_category)
 
-#mise en forme des données
-"""pages_data = transform_info(urls)"""
-# liste de dictionnaires ou dictionnaire de listes?
-# quid csv_writer?
+#mise en forme et écriture des données
+#i = 0
+for u in range(len(urls)):
+    pages_data = transform_info(urls[u])
+    #print(pages_data)
+    #i += 1
+#print(str(i))
+#    create_csv(pages_data)
 
-"""
-#creation du fichier CSV
-create_csv(pages_data)
-
-"""
