@@ -41,13 +41,10 @@ def transform_info(url_chosen):
 
 def create_csv(rows):
     header = list(rows.keys())
-    """header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
-              'price_excluding_tax', 'number_available', 'product_description', 'category',
-              'review_rating', 'image_url']"""
-
-    with os.open('P2_01_extract.csv', 'a', newline='', encoding="utf-8") as csv_file:
+    with open('P2_01_extract.csv', 'a',  encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.DictWriter(csv_file, header)
-        csv_writer.writeheader()
+        if not csv.Sniffer().has_header(csv_file.read(sample_bytes)):
+            csv_writer.writeheader()
         csv_writer.writerow(rows)
 
 
@@ -88,6 +85,6 @@ for u in range(len(urls)):
     pages_data = transform_info(urls[u])
     #print(pages_data)
     #i += 1
-#print(str(i))
-#    create_csv(pages_data)
+    #print(str(i))
+    create_csv(pages_data)
 
