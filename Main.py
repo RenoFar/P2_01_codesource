@@ -96,4 +96,4 @@ for c in range(1,len(list_cat)):
     book_category = list_cat[c].split('/')[-2:-1]
     urls_list = listing_url(url_site, book_category[0])
     print(urls_list)
-    #writing_data(urls_list, book_category)
+    writing_data(urls_list, book_category[0])
