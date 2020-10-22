@@ -50,6 +50,7 @@ def create_csv(rows, name_cat):
 
 def listing_url(url_site, book_cat):
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
+    print(url_category)
     url_list = [url_site + 'catalogue/' + '/'.join(u.a['href'].split('/')[3:-1])
                 for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
 
@@ -73,16 +74,26 @@ def listing_url(url_site, book_cat):
     return url_list
 
 
-def Writing_data(url_lists, books_cat):
+def writing_data(url_lists, books_cat):
     for u in range(len(url_lists)):
         pages_data = transform_info(url_lists[u])
         create_csv(pages_data, books_cat)
 
 
+def listing_category(home_page):
+    category_list = [home_page + u.a['href']
+                for u in BeautifulSoup(extract_url(home_page).text, "html.parser")
+                         .find('ul', attrs={'class': 'nav nav-list'}).find_all('li')]
+    return category_list
+
+
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
-book_category = 'sequential-art_5'
-urls_list = listing_url(url_site, book_category)
-
+list_cat = listing_category(url_site)
 #mise en forme et écriture des données
-Writing_data(urls_list, book_category)
+book_category = []
+for c in range(1,len(list_cat)):
+    book_category = list_cat[c].split('/')[-2:-1]
+    urls_list = listing_url(url_site, book_category[0])
+    print(urls_list)
+    #writing_data(urls_list, book_category)
