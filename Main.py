@@ -29,11 +29,10 @@ def transform_info(url_chosen):
 
     image_url = url_site + '/'.join(page_html.find('img')['src'].split('/')[2:])
 
-    try:
-        product_description = page_html.find('div', attrs={'id': 'product_description',
-                                                           'class': 'sub-header'}).find_next('p').text
-    except:
-        product_description = ''
+    if page_html.find('article', 'product_page').find('p', recursive = False) is not None:
+        product_description = page_html.find('article', 'product_page').find('p', recursive=False).text
+    else:
+        product_description = ""
 
     category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
 
@@ -41,6 +40,7 @@ def transform_info(url_chosen):
                  'title': title, 'price_including_tax': price_including_tax,'price_excluding_tax': price_excluding_tax,
                  'number_available': number_available, 'product_description': product_description,
                  'category':category, 'review_rating': review_rating, 'image_url': image_url}
+    print(page_info)
     return  page_info
 
 
@@ -96,6 +96,8 @@ def listing_category(home_page):
                          .find('ul', attrs={'class': 'nav nav-list'}).find_all('li')]
     return category_list
 
+
+"""transform_info('http://books.toscrape.com/catalogue/alice-in-wonderland-alices-adventures-in-wonderland-1_5/index.html')"""
 
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
