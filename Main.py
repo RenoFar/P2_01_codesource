@@ -51,7 +51,7 @@ def create_csv(rows, name_cat):
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
             csv_writer.writeheader()
         csv_writer.writerow(rows)
-        print(rows['title'])
+        """print(rows['title'])"""
 
 def listing_url(url_site, book_cat):
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
@@ -110,5 +110,5 @@ for c in range(1,len(list_cat)):
     print(urls_list)
     count += writing_data(urls_list, book_category[0])
 
-#total du nombre de scraping réussis
+#total de scraping réussis
 print(str(count))
