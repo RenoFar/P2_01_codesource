@@ -59,8 +59,10 @@ def listing_url(url_site, book_cat):
     url_list = [url_site + 'catalogue/' + '/'.join(u.a['href'].split('/')[3:-1])
                 for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
 
-    book_numbers = int(BeautifulSoup(extract_url(url_category).text, "html.parser")
-                       .find('form', attrs={'class': 'form-horizontal'}).text[3:5])
+    book_numbers = int(BeautifulSoup(extract_url(url_category)
+                                     .text, "html.parser").find('form', attrs={'class': 'form-horizontal'})
+                       .text.split('\n')[3].split(' ')[0])
+    """print(book_numbers)"""
     if book_numbers >= 20:
         if book_numbers % 20 == 0:
             for i in range(2, int(book_numbers//20)+1):
@@ -83,7 +85,7 @@ def writing_data(url_lists, books_cat):
     counter = 0
     for u in range(len(url_lists)):
         pages_data = transform_info(url_lists[u])
-        """create_csv(pages_data, books_cat)"""
+        create_csv(pages_data, books_cat)
         counter += 1
     print(str(counter))
     return counter
@@ -98,6 +100,7 @@ def listing_category(home_page):
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
 list_cat = listing_category(url_site)
+
 #mise en forme et écriture des données
 book_category = []
 count = 0
@@ -106,5 +109,6 @@ for c in range(1,len(list_cat)):
     urls_list = listing_url(url_site, book_category[0])
     print(urls_list)
     count += writing_data(urls_list, book_category[0])
+
 #total du nombre de scraping réussis
 print(str(count))
