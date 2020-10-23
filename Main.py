@@ -29,16 +29,17 @@ def transform_info(url_chosen):
 
     image_url = url_site + '/'.join(page_html.find('img')['src'].split('/')[2:])
 
-    product_description = ['']
-    if not page_html.find('div', attrs={'id': 'product_description','class': 'sub-header'}).find_next('p') == 0:
+    try:
         product_description = page_html.find('div', attrs={'id': 'product_description',
-                                                           'class': 'sub-header'}).find_next('p')
+                                                           'class': 'sub-header'}).find_next('p').text
+    except:
+        product_description = ''
 
     category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
 
     page_info = {'product_page_url': url_chosen, 'universal_ product_code (upc)': universal_product_code,
                  'title': title, 'price_including_tax': price_including_tax,'price_excluding_tax': price_excluding_tax,
-                 'number_available': number_available, 'product_description': product_description.text,
+                 'number_available': number_available, 'product_description': product_description,
                  'category':category, 'review_rating': review_rating, 'image_url': image_url}
     return  page_info
 
@@ -50,7 +51,7 @@ def create_csv(rows, name_cat):
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
             csv_writer.writeheader()
         csv_writer.writerow(rows)
-
+        #print(rows['title'])
 
 def listing_url(url_site, book_cat):
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
@@ -79,10 +80,12 @@ def listing_url(url_site, book_cat):
 
 
 def writing_data(url_lists, books_cat):
+    counter = 0
     for u in range(len(url_lists)):
         pages_data = transform_info(url_lists[u])
-        create_csv(pages_data, books_cat)
-
+        """create_csv(pages_data, books_cat)"""
+        counter += 1
+    return counter
 
 def listing_category(home_page):
     category_list = [home_page + u.a['href']
@@ -93,14 +96,14 @@ def listing_category(home_page):
 
 #choix et requete des pages
 url_site = 'http://books.toscrape.com/'
-"""list_cat = listing_category(url_site)
+list_cat = listing_category(url_site)
 #mise en forme et écriture des données
 book_category = []
+count = 0
 for c in range(1,len(list_cat)):
     book_category = list_cat[c].split('/')[-2:-1]
     urls_list = listing_url(url_site, book_category[0])
     print(urls_list)
-    writing_data(urls_list, book_category[0])"""
+    count += writing_data(urls_list, book_category[0])
 
-writing_data(['http://books.toscrape.com/catalogue/alice-in-wonderland-alices-adventures-in-wonderland-1_5'],
-             ['classic_6'])
+print(str(count))
