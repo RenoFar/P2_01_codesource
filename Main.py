@@ -36,22 +36,23 @@ def transform_info(url_chosen):
 
     category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
 
-    page_info = {'product_page_url': url_chosen, 'universal_ product_code (upc)': universal_product_code,
-                 'title': title, 'price_including_tax': price_including_tax,'price_excluding_tax': price_excluding_tax,
-                 'number_available': number_available, 'product_description': product_description,
-                 'category':category, 'review_rating': review_rating, 'image_url': image_url}
-    print(page_info)
+    page_info = [url_chosen, universal_product_code, title, price_including_tax, price_excluding_tax, number_available,
+                 product_description, category, review_rating, image_url]
+    """print(page_info)"""
     return  page_info
 
 
 def create_csv(rows, name_cat):
-    header = list(rows.keys())
+    header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
+              'price_excluding_tax', 'number_available', 'product_description', 'category',
+              'review_rating', 'image_url']
     with open('P2_01_' + str(name_cat) + '.csv', 'a', encoding='utf-8', newline='') as csv_file:
-        csv_writer = csv.DictWriter(csv_file, header)
+        csv_writer = csv.writer(csv_file)
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
-            csv_writer.writeheader()
-        csv_writer.writerow(rows)
-        """print(rows['title'])"""
+            csv_writer.writerow(header)
+        for r in range(len(rows)):
+            csv_writer.writerow(rows[r])
+
 
 def listing_url(url_site, book_cat):
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
@@ -83,11 +84,13 @@ def listing_url(url_site, book_cat):
 
 def writing_data(url_lists, books_cat):
     counter = 0
+    pages_data = []
     for u in range(len(url_lists)):
-        pages_data = transform_info(url_lists[u])
-        create_csv(pages_data, books_cat)
+        pages_data.append(transform_info(url_lists[u]))
         counter += 1
-    print(str(counter))
+    """print(pages_data)"""
+    create_csv(pages_data, books_cat)
+    """print(str(counter))"""
     return counter
 
 def listing_category(home_page):
