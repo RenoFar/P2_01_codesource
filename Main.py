@@ -10,7 +10,7 @@ def extract_url(page_url):  #Test de présence de l'url et récupération des do
     if request.ok:
         return request
 
-def listing_category(home_page): #Extraction et mise en forme de la  liste des catégories
+def listing_category(home_page): #Extraction et mise en forme de la liste des catégories
     category_list = [home_page + u.a['href']
                 for u in BeautifulSoup(extract_url(home_page).text, "html.parser")
                          .find('ul', attrs={'class': 'nav nav-list'}).find_all('li')]
@@ -46,6 +46,7 @@ def listing_url(url_site, book_cat): #Création de la liste des urls par catégo
             url_category = url_site + 'catalogue/category/books/' + book_cat + '/page-' + str(i) + '.html'
             url_list = url_list + [url_site + 'catalogue/' +'/'.join(u.a['href'].split('/')[3:-1])
                                    for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
+    #Suivi des urls récupérées
     print('nombre de page: ' + str(page_numbers))
     return url_list
 
@@ -87,17 +88,20 @@ def transform_info(url_chosen): #Mise en forme des données d'une url
     return [url_chosen, universal_product_code, title, price_including_tax, price_excluding_tax,
             number_available, product_description, category, review_rating, image_url]
 
-def create_csv(rows, name_cat):
+def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
     name_cat = name_cat.split('/')[-2:-1][0]
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
               'price_excluding_tax', 'number_available', 'product_description', 'category',
               'review_rating', 'image_url']
     with open('P2_01_' + str(name_cat) + '.csv', 'a', encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
+        #Test de l'existence du fichier
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
             csv_writer.writerow(header)
+        #Boucle d'écriture des lignes par url
         for r in range(len(rows)):
             csv_writer.writerow(rows[r])
+
 
 
 #Choix et requete des pages
@@ -112,13 +116,13 @@ for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     #Récupération de la liste des urls par catégorie
     urls_list = listing_url(url_site, list_cat[c])
     #Suivi des urls récupérées
-    print(urls_list)
     print('nombre d'' url(s) récupérée(s): ' + str(len(urls_list)))
     #Mise en forme des données recherchées
-    count_modif += transform_data(urls_list, list_cat[c])[0]
-    print(transform_data(urls_list, list_cat[c])[1])
+    data_modif = transform_data(urls_list, list_cat[c])
+    count_modif += data_modif[0]
+    print(data_modif[1])
     #Création et écriture des fichiers CSV par catégorie
-    """create_csv(transform_data(urls_list, list_cat[c])[1], list_cat[c])"""
+    create_csv(transform_data(urls_list, list_cat[c])[1], list_cat[c])
 
 #Total de mises en forme et écritures réussies
 print('nombre total d''urls mise en forme ' + str(count_modif))
