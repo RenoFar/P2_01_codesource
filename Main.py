@@ -19,7 +19,7 @@ def listing_category(home_page): #Extraction et mise en forme de la  liste des c
 def listing_url(url_site, book_cat): #Création de la liste des urls par catégorie
     #Mise en forme de l'url à extraire
     book_cat = book_cat.split('/')[-2:-1][0]
-    print(book_cat)
+    print('\nCatégorie: ' + book_cat)
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
     print(url_category)
 
@@ -31,24 +31,22 @@ def listing_url(url_site, book_cat): #Création de la liste des urls par catégo
     book_numbers = int(BeautifulSoup(extract_url(url_category)
                                      .text, "html.parser").find('form', attrs={'class': 'form-horizontal'})
                        .text.split('\n')[3].split(' ')[0])
-    print(book_numbers)
+    page_numbers = 1
+    print('nombre de livre: ' + str(book_numbers))
+
     #Récupération des urls sur les pages suivantes si elles existent
     if book_numbers >= 20:
-        #Détermination du nombre d'url à extraire: 20 par page
+        #Détermination du nombre de page d'url à extraire: 20 par page
         if book_numbers % 20 == 0:
-            for i in range(2, int(book_numbers//20)+1):
-                url_category = url_site + 'catalogue/category/books/' + book_cat + '/page-' + str(i) + '.html'
-                url_list = url_list + [url_site + 'catalogue/' +
-                                       '/'.join(u.a['href'].split('/')[3:-1])
-                                       for u in BeautifulSoup(extract_url(url_category).text,
-                                                              "html.parser").find_all('h3')]
+            page_numbers = book_numbers//20
         else:
-            for i in range(2, int((book_numbers//20)+1)+1):
-                url_category = url_site + 'catalogue/category/books/' + book_cat + '/page-' + str(i) + '.html'
-                url_list = url_list + [url_site + 'catalogue/' +
-                                       '/'.join(u.a['href'].split('/')[3:-1])
-                                       for u in BeautifulSoup(extract_url(url_category).text,
-                                                              "html.parser").find_all('h3')]
+            page_numbers = book_numbers // 20 + 1
+        #Rajout des urls des pages suivantes à la liste
+        for i in range(2, int(page_numbers + 1)):
+            url_category = url_site + 'catalogue/category/books/' + book_cat + '/page-' + str(i) + '.html'
+            url_list = url_list + [url_site + 'catalogue/' +'/'.join(u.a['href'].split('/')[3:-1])
+                                   for u in BeautifulSoup(extract_url(url_category).text, "html.parser").find_all('h3')]
+    print('nombre de page: ' + str(page_numbers))
     return url_list
 
 def transform_info(url_chosen):
@@ -110,9 +108,12 @@ list_cat = listing_category(url_site) #Récupération de la liste des catégorie
 count = 0 #Initialisation du compteur de nombre d'urls traités
 
 for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
-    urls_list = listing_url(url_site, list_cat[c]) #Récupération de la liste des urls par catégories
+    #Récupération de la liste des urls par catégorie
+    urls_list = listing_url(url_site, list_cat[c])
+    #Suivi des urls récupérées
     print(urls_list)
+    print('nombre d'' url(s) récupérée(s): ' + str(len(urls_list)))
     """count += writing_data(urls_list, list_cat[c])"""
 
 #Total de scraping réussis
-print(str(count))
+print('nombre total d''urls traitées ' + str(count))
