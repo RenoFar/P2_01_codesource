@@ -19,7 +19,7 @@ def listing_category(home_page): #Extraction et mise en forme de la liste des ca
 def listing_url(url_site, book_cat): #Création de la liste des urls par catégorie
     #Mise en forme de l'url à extraire
     book_cat = book_cat.split('/')[-2:-1][0]
-    print('\nCatégorie: ' + book_cat)
+    print('Catégorie: ' + book_cat)
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
     print(url_category)
 
@@ -57,7 +57,7 @@ def transform_data(url_lists, books_cat): #Boucle de transformation des données
     for u in range(len(url_lists)):
         pages_data.append(transform_info(url_lists[u]))
         counter += 1
-    """create_csv(pages_data, books_cat)"""
+        print('nombre d\' url(s) traitée(s): ' + str(counter) + ' sur ' + str(len(urls_list)))
     return (counter, pages_data)
 
 def transform_info(url_chosen): #Mise en forme des données d'une url
@@ -99,9 +99,12 @@ def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
         if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
             csv_writer.writerow(header)
         #Boucle d'écriture des lignes par url
+        count = 0
         for r in range(len(rows)):
             csv_writer.writerow(rows[r])
-
+            count += 1
+    print('catégorie : ' + str(name_cat) + ' sauvegardée\n')
+    return count
 
 
 #Choix et requete des pages
@@ -116,14 +119,13 @@ for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     #Récupération de la liste des urls par catégorie
     urls_list = listing_url(url_site, list_cat[c])
     #Suivi des urls récupérées
-    print('nombre d'' url(s) récupérée(s): ' + str(len(urls_list)))
+    print('nombre d\' url(s) récupérée(s): ' + str(len(urls_list)))
     #Mise en forme des données recherchées
     data_modif = transform_data(urls_list, list_cat[c])
     count_modif += data_modif[0]
-    print(data_modif[1])
     #Création et écriture des fichiers CSV par catégorie
-    create_csv(transform_data(urls_list, list_cat[c])[1], list_cat[c])
+    count_write += create_csv(data_modif[1], list_cat[c])
 
 #Total de mises en forme et écritures réussies
-print('nombre total d''urls mise en forme ' + str(count_modif))
-print('nombre total d''urls traitées ' + str(count_write))
+print('nombre total d\' urls mise en forme ' + str(count_modif))
+print('nombre total d\' urls traitées ' + str(count_write))
