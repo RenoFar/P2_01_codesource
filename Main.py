@@ -49,37 +49,46 @@ def listing_url(url_site, book_cat): #Création de la liste des urls par catégo
     print('nombre de page: ' + str(page_numbers))
     return url_list
 
-def transform_info(url_chosen):
+def transform_data(url_lists, books_cat): #Boucle de transformation des données par catégorie
+    counter = 0
+    pages_data = []
+    # Rajout des données mise en forme de chaque url
+    for u in range(len(url_lists)):
+        pages_data.append(transform_info(url_lists[u]))
+        counter += 1
+    """create_csv(pages_data, books_cat)"""
+    return (counter, pages_data)
+
+def transform_info(url_chosen): #Mise en forme des données d'une url
     page_html = BeautifulSoup(extract_url(url_chosen).text, "html.parser")
 
     title = page_html.find('h1').text
+    image_url = url_site + '/'.join(page_html.find('img')['src'].split('/')[2:])
+    category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
 
+    #Récupération des données d'un tableau html dans un dictionnaire
     tr_dic = {}
     for trs in page_html.findAll('tr'):
         ths = trs.findAll('th')
         tds = trs.findAll('td')
         tr_dic[ths[0].string] = tds[0].string
-
     universal_product_code = tr_dic['UPC']
     price_including_tax = tr_dic['Price (incl. tax)'][1:]
     price_excluding_tax = tr_dic['Price (excl. tax)'][1:]
     number_available = tr_dic['Availability']
     review_rating = tr_dic['Number of reviews']
 
-    image_url = url_site + '/'.join(page_html.find('img')['src'].split('/')[2:])
-
+    #Test de la présence et récupération de la descriton du livre
     if page_html.find('article', 'product_page').find('p', recursive = False) is not None:
         product_description = page_html.find('article', 'product_page').find('p', recursive=False).text
     else:
         product_description = ""
 
-    category = page_html.find('ul', attrs={'class': 'breadcrumb'}).find_all('a')[2].contents[0]
-
-    page_info = [url_chosen, universal_product_code, title, price_including_tax, price_excluding_tax, number_available,
-                 product_description, category, review_rating, image_url]
-    return  page_info
+    return [url_chosen, universal_product_code, title, price_including_tax, price_excluding_tax,
+            number_available, product_description, category, review_rating, image_url]
 
 def create_csv(rows, name_cat):
+    name_cat = name_cat.split('/')[-2:-1][0]
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
               'price_excluding_tax', 'number_available', 'product_description', 'category',
               'review_rating', 'image_url']
@@ -90,22 +99,14 @@ def create_csv(rows, name_cat):
         for r in range(len(rows)):
             csv_writer.writerow(rows[r])
 
-def writing_data(url_lists, books_cat):
-    counter = 0
-    pages_data = []
-    for u in range(len(url_lists)):
-        pages_data.append(transform_info(url_lists[u]))
-        counter += 1
-    create_csv(pages_data, books_cat)
-    return counter
-
 
 #Choix et requete des pages
 url_site = 'http://books.toscrape.com/' #Selection de l'url de la page principale du site
 list_cat = listing_category(url_site) #Récupération de la liste des catégories
 
 #Mise en forme et écriture des données
-count = 0 #Initialisation du compteur de nombre d'urls traités
+count_modif = 0 #Initialisation du compteur de nombre d'urls mises en forme
+count_write = 0 #Initialisation du compteur de nombre d'urls écrites sur les CSV
 
 for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     #Récupération de la liste des urls par catégorie
@@ -113,7 +114,12 @@ for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     #Suivi des urls récupérées
     print(urls_list)
     print('nombre d'' url(s) récupérée(s): ' + str(len(urls_list)))
-    """count += writing_data(urls_list, list_cat[c])"""
+    #Mise en forme des données recherchées
+    count_modif += transform_data(urls_list, list_cat[c])[0]
+    print(transform_data(urls_list, list_cat[c])[1])
+    #Création et écriture des fichiers CSV par catégorie
+    """create_csv(transform_data(urls_list, list_cat[c])[1], list_cat[c])"""
 
-#Total de scraping réussis
-print('nombre total d''urls traitées ' + str(count))
+#Total de mises en forme et écritures réussies
+print('nombre total d''urls mise en forme ' + str(count_modif))
+print('nombre total d''urls traitées ' + str(count_write))
