@@ -107,11 +107,12 @@ def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
 
 def download_img(data_img):  #Téléchargement de l'image de chaque url
     count_img = 0
-    os.makedirs('./images', exist_ok=True)
+    os.makedirs('../P2_01_images', exist_ok=True)
     for i in range(len(data_img)):
         image_url = data_img[i][-1]
+        image_name = data_img[i][0].split('/')[-1]
         r = extract_url(image_url)
-        with open('./images/'+ data_img[i][2] + '.jpg', 'wb') as img_file:
+        with open('../P2_01_images/'+ image_name + '.jpg', 'wb') as img_file:
             img_file.write(r.content)
         count_img += 1
     print('nombre d\'images sauvegardées: ' + str(count_img))
@@ -136,7 +137,7 @@ for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     data_modif = transform_data(urls_list, list_cat[c])
     count_modif += data_modif[0]
     #Création et écriture des fichiers CSV par catégorie
-    """count_write += create_csv(data_modif[1], list_cat[c])"""
+    count_write += create_csv(data_modif[1], list_cat[c])
     #Téléchargement des images de chaque url
     count_save += download_img(data_modif[1])
 
