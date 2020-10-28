@@ -19,7 +19,7 @@ def listing_category(home_page): #Extraction et mise en forme de la liste des ca
 def listing_url(url_site, book_cat): #Création de la liste des urls par catégorie
     #Mise en forme de l'url à extraire
     book_cat = book_cat.split('/')[-2:-1][0]
-    print('Catégorie: ' + book_cat)
+    print('\nCatégorie: ' + book_cat)
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
     print(url_category)
 
@@ -32,7 +32,7 @@ def listing_url(url_site, book_cat): #Création de la liste des urls par catégo
                                      .text, "html.parser").find('form', attrs={'class': 'form-horizontal'})
                        .text.split('\n')[3].split(' ')[0])
     page_numbers = 1
-    print('nombre de livre: ' + str(book_numbers))
+    print('nombre de livres: ' + str(book_numbers))
 
     #Récupération des urls sur les pages suivantes si elles existent
     if book_numbers >= 20:
@@ -57,7 +57,7 @@ def transform_data(url_lists, books_cat): #Boucle de transformation des données
     for u in range(len(url_lists)):
         pages_data.append(transform_info(url_lists[u]))
         counter += 1
-        print('nombre d\' url(s) traitée(s): ' + str(counter) + ' sur ' + str(len(urls_list)))
+        print('nombre d\'url(s) traitée(s): ' + str(counter) + ' sur ' + str(len(urls_list)))
     return (counter, pages_data)
 
 def transform_info(url_chosen): #Mise en forme des données d'une url
@@ -84,7 +84,6 @@ def transform_info(url_chosen): #Mise en forme des données d'une url
         product_description = page_html.find('article', 'product_page').find('p', recursive=False).text
     else:
         product_description = ""
-
     return [url_chosen, universal_product_code, title, price_including_tax, price_excluding_tax,
             number_available, product_description, category, review_rating, image_url]
 
@@ -103,8 +102,20 @@ def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
         for r in range(len(rows)):
             csv_writer.writerow(rows[r])
             count += 1
-    print('catégorie : ' + str(name_cat) + ' sauvegardée\n')
+    print('catégorie : ' + str(name_cat) + ' sauvegardée')
     return count
+
+def download_img(data_img):  #Téléchargement de l'image de chaque url
+    count_img = 0
+    os.makedirs('./images', exist_ok=True)
+    for i in range(len(data_img)):
+        image_url = data_img[i][-1]
+        r = extract_url(image_url)
+        with open('./images/'+ data_img[i][2] + '.jpg', 'wb') as img_file:
+            img_file.write(r.content)
+        count_img += 1
+    print('nombre d\'images sauvegardées: ' + str(count_img))
+    return count_img
 
 
 #Choix et requete des pages
@@ -114,18 +125,22 @@ list_cat = listing_category(url_site) #Récupération de la liste des catégorie
 #Mise en forme et écriture des données
 count_modif = 0 #Initialisation du compteur de nombre d'urls mises en forme
 count_write = 0 #Initialisation du compteur de nombre d'urls écrites sur les CSV
+count_save = 0 #Initialisation du compteur de nombre d'images sauvegardées
 
 for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
     #Récupération de la liste des urls par catégorie
     urls_list = listing_url(url_site, list_cat[c])
     #Suivi des urls récupérées
-    print('nombre d\' url(s) récupérée(s): ' + str(len(urls_list)))
+    print('nombre d\'url(s) récupérée(s): ' + str(len(urls_list)))
     #Mise en forme des données recherchées
     data_modif = transform_data(urls_list, list_cat[c])
     count_modif += data_modif[0]
     #Création et écriture des fichiers CSV par catégorie
-    count_write += create_csv(data_modif[1], list_cat[c])
+    """count_write += create_csv(data_modif[1], list_cat[c])"""
+    #Téléchargement des images de chaque url
+    count_save += download_img(data_modif[1])
 
-#Total de mises en forme et écritures réussies
-print('nombre total d\' urls mise en forme ' + str(count_modif))
-print('nombre total d\' urls traitées ' + str(count_write))
+#Total de mises en forme, écritures et téléchargements réussis
+print('\nnombre total d\'urls mise en forme: ' + str(count_modif))
+print('nombre total d\'urls traitées: ' + str(count_write))
+print('nombre total d\'images sauvegardées: ' + str(count_save))
