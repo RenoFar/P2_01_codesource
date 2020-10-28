@@ -18,7 +18,7 @@ def listing_category(home_page): #Extraction et mise en forme de la liste des ca
 
 def listing_url(url_site, book_cat): #Création de la liste des urls par catégorie
     #Mise en forme de l'url à extraire
-    book_cat = book_cat.split('/')[-2:-1][0]
+    """book_cat = book_cat.split('/')[-2:-1][0]"""
     print('\nCatégorie: ' + book_cat)
     url_category = url_site + 'catalogue/category/books/' + book_cat + '/index.html'
     print(url_category)
@@ -50,7 +50,7 @@ def listing_url(url_site, book_cat): #Création de la liste des urls par catégo
     print('nombre de page: ' + str(page_numbers))
     return url_list
 
-def transform_data(url_lists, books_cat): #Boucle de transformation des données par catégorie
+def transform_data(url_lists): #Boucle de transformation des données par catégorie
     counter = 0
     pages_data = []
     # Rajout des données mise en forme de chaque url
@@ -88,14 +88,14 @@ def transform_info(url_chosen): #Mise en forme des données d'une url
             number_available, product_description, category, review_rating, image_url]
 
 def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
-    name_cat = name_cat.split('/')[-2:-1][0]
     header = ['product_page_url', 'universal_ product_code (upc)', 'title', 'price_including_tax',
               'price_excluding_tax', 'number_available', 'product_description', 'category',
               'review_rating', 'image_url']
-    with open('P2_01_' + str(name_cat) + '.csv', 'a', encoding='utf-8', newline='') as csv_file:
+    os.makedirs('../P2_02_csv', exist_ok=True)  #Création du dossier 'csv'
+    with open('../P2_02_csv/P2_02_' + str(name_cat) + '.csv', 'a', encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         #Test de l'existence du fichier
-        if os.stat('P2_01_' + str(name_cat) + '.csv').st_size == 0:
+        if os.stat('../P2_02_csv/P2_02_' + str(name_cat) + '.csv').st_size == 0:
             csv_writer.writerow(header)
         #Boucle d'écriture des lignes par url
         count = 0
@@ -105,14 +105,14 @@ def create_csv(rows, name_cat): #Création des fichiers CSV par catégorie
     print('catégorie : ' + str(name_cat) + ' sauvegardée')
     return count
 
-def download_img(data_img):  #Téléchargement de l'image de chaque url
+def download_img(data_img, name_cat): #Téléchargement de l'image de chaque url
     count_img = 0
-    os.makedirs('../P2_01_images', exist_ok=True)
+    os.makedirs('../P2_03_images/' + name_cat, exist_ok=True) #Création du dossier 'images' par catégorie
     for i in range(len(data_img)):
         image_url = data_img[i][-1]
         image_name = data_img[i][0].split('/')[-1]
         r = extract_url(image_url)
-        with open('../P2_01_images/'+ image_name + '.jpg', 'wb') as img_file:
+        with open('../P2_03_images/' + name_cat + '/' + image_name + '.jpg', 'wb') as img_file:
             img_file.write(r.content)
         count_img += 1
     print('nombre d\'images sauvegardées: ' + str(count_img))
@@ -128,20 +128,22 @@ count_modif = 0 #Initialisation du compteur de nombre d'urls mises en forme
 count_write = 0 #Initialisation du compteur de nombre d'urls écrites sur les CSV
 count_save = 0 #Initialisation du compteur de nombre d'images sauvegardées
 
-for c in range(1,len(list_cat)): #Boucle de traitement par catégorie
+for c in range(1, len(list_cat)): #Boucle de traitement par catégorie
+    name_cat = list_cat[c].split('/')[-2:-1][0]
     #Récupération de la liste des urls par catégorie
-    urls_list = listing_url(url_site, list_cat[c])
+    urls_list = listing_url(url_site, name_cat)
     #Suivi des urls récupérées
     print('nombre d\'url(s) récupérée(s): ' + str(len(urls_list)))
     #Mise en forme des données recherchées
-    data_modif = transform_data(urls_list, list_cat[c])
+    data_modif = transform_data(urls_list)
     count_modif += data_modif[0]
     #Création et écriture des fichiers CSV par catégorie
-    count_write += create_csv(data_modif[1], list_cat[c])
+    count_write += create_csv(data_modif[1], name_cat)
     #Téléchargement des images de chaque url
-    count_save += download_img(data_modif[1])
+    count_save += download_img(data_modif[1], name_cat)
 
 #Total de mises en forme, écritures et téléchargements réussis
 print('\nnombre total d\'urls mise en forme: ' + str(count_modif))
 print('nombre total d\'urls traitées: ' + str(count_write))
 print('nombre total d\'images sauvegardées: ' + str(count_save))
+
