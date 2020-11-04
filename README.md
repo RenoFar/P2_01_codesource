@@ -12,9 +12,9 @@ Il télécharge et sauvegarde le fichier image de chaque page produit (un livre 
   3. la branche [Scrap_All_Categorie](https://github.com/RenoFar/P2_01_codesource/tree/Scrap_All_Category "Scrap_All_Categorie") corresponds au script final développé à partir de la deuxième branche, permettant de traiter toutes les catégories du site et de télécharger les fichiers images.
   
 ### Pré-requis:
-langage de programmation Python 3 
-Création d'un environnement virtuel avec le module VenV
-Utilisation d'une CLI (interface en ligne de commande)
+- langage de programmation Python 3 
+- Création d'un environnement virtuel avec le module VenV
+- Utilisation d'une CLI (interface en ligne de commande)
 
 ### Installation:
 1. Cloner le projet depuis cette [page](https://github.com/RenoFar/P2_01_codesource "page")
