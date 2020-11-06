@@ -23,7 +23,8 @@ Il télécharge et sauvegarde le fichier image de chaque page produit (un livre 
 	- Activer l'environnement, exécutez `source env/bin/activate`  (si vous êtes sous Windows, la commande sera `env/Scripts/activate.bat`  )
 	- Installer les paquets Python répertoriés dans le fichier `requirements.txt`
 		avec la commande `$ pip install -r requirements.txt`
-3. Exécuter le script Main.py avec la commande `python Main.py`
+3. Installer les modules à l'aide du fichier requirements.txt
+4. Exécuter le script Main.py avec la commande `python Main.py`
 
 ### Avertissement:
  - Le script créé 2 dossiers contenant 50 fichiers CSV pour le premier et 50 sous dossiers pour chaque catégorie dans le deuxième dossier, dans lesquels sont enregistrés les images.
