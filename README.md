@@ -1,7 +1,8 @@
 # **# P2_01_codesource**
 
 ### Introduction:
-Ce script Python extrait des informations sur les livres présents sur le site Books to Scrape.
+Ce script Python est un exercice réalisé dans le cadre d'une formation chez OpenClassrooms
+ilextrait des informations sur les livres présents sur le site Books to Scrape.
 Il sauvegarde ces données par catégories de livre sous forme de tableur CSV.
 Il télécharge et sauvegarde le fichier image de chaque page produit (un livre par page).
 
